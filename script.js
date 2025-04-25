@@ -1,11 +1,10 @@
 let leftOperand = "";
 let rightOperand = "";
-let operator = "";
-let hasOperator = false;
+let currOperator = "";
+let result = "";
 
-const expression = document.querySelector(".expression");
-const result = document.querySelector(".result");
-const buttons = document.querySelector(".buttons");
+const expressionContainer = document.querySelector(".expression");
+const resultContainer = document.querySelector(".result");
 const clearBtn = document.querySelector(".clear");
 const deleteBtn = document.querySelector(".delete");
 const digitBtns = document.querySelectorAll(".digit");
@@ -30,28 +29,59 @@ function operate(operator, num1, num2) {
   }
 }
 
-clearBtn.addEventListener("click", () => {
-  expression.textContent = "";
-  result.textContent = "";
-  hasOperator = false;
-});
+function round(num) {
+  return Math.round(num * 1000) / 1000;
+}
+
+function clear() {
+  expressionContainer.textContent = "";
+  resultContainer.textContent = "";
+  leftOperand = "";
+  rightOperand = "";
+  currOperator = "";
+  result = "";
+}
+
+clearBtn.addEventListener("click", clear);
 
 digitBtns.forEach(digit => {
   digit.addEventListener("click", () => {
-    expression.textContent += digit.value;
-    if (hasOperator) {
-      leftOperand += digit.value;
-    } else {
+    if (result) clear();
+    expressionContainer.textContent += digit.value;
+    if (currOperator) {
       rightOperand += digit.value;
+    } else {
+      leftOperand += digit.value;
     }
   });
 });
 
 operatorBtns.forEach(operator => {
   operator.addEventListener("click", () => {
-    if (!hasOperator) {
-      expression.textContent += ` ${operator.textContent} `;
-      hasOperator = true;
+    if (rightOperand) {
+      result = round(operate(currOperator, +leftOperand, +rightOperand)).toString();
+      resultContainer.textContent = result;
+      leftOperand = result;
+      rightOperand = "";
+      currOperator = "";
+    }
+    if (result) {
+      expressionContainer.textContent = result;
+      leftOperand = result;
+      result = 0;
+    }
+    if (leftOperand && !currOperator) {
+      expressionContainer.textContent += ` ${operator.textContent} `;
+      currOperator = operator.value;
     }
   });
+});
+
+equalsBtn.addEventListener("click", () => {
+  if (!(leftOperand && rightOperand && currOperator)) return;
+  result = round(operate(currOperator, +leftOperand, +rightOperand)).toString();
+  resultContainer.textContent = result;
+  leftOperand = "";
+  rightOperand = "";
+  currOperator = "";
 });
