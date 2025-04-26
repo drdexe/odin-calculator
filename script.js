@@ -101,7 +101,7 @@ function clear() {
 }
 
 function deleteDigit() {
-  if (result) clear();
+  if (result) initialize();
   if (!currOperator) {
     leftOperand = leftOperand.slice(0, -1);
   } else {
@@ -111,7 +111,7 @@ function deleteDigit() {
 }
 
 function appendDigit(digit) {
-  if (result) clear();
+  if (result) initialize();
   if (!currOperator) {
     leftOperand += digit;
   } else {
@@ -121,7 +121,7 @@ function appendDigit(digit) {
 }
 
 function appendDecimal() {
-  if (result) clear();
+  if (result) initialize();
   if (!currOperator && !leftOperand.includes(".")) {
     leftOperand += ".";
   } else if (currOperator && !rightOperand.includes(".")) {
