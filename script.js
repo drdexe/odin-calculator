@@ -2,7 +2,9 @@ let leftOperand = "";
 let rightOperand = "";
 let currOperator = "";
 let result = "";
+const ERROR = "Error";
 const hasExpression = () => leftOperand && rightOperand && currOperator;
+const hasResult = () => result || resultContainer.textContent === ERROR;
 
 const expressionContainer = document.querySelector(".expression");
 const resultContainer = document.querySelector(".result");
@@ -14,7 +16,7 @@ const operatorBtns = document.querySelectorAll(".operator");
 const equalsBtn = document.querySelector(".equals");
 
 clearBtn.addEventListener("click", clear);
-deleteBtn.addEventListener("click", deleteDigit);
+deleteBtn.addEventListener("click", deleteLast);
 decimalBtn.addEventListener("click", appendDecimal);
 equalsBtn.addEventListener("click", calculate);
 
@@ -36,7 +38,7 @@ document.addEventListener("keydown", e => {
   ) setOperator(e.key);
   else if (e.key === ".") appendDecimal();
   else if (e.key === "=" || e.key === "Enter") calculate();
-  else if (e.key === "Backspace") deleteDigit();
+  else if (e.key === "Backspace") deleteLast();
 });
 
 const add = (a, b) => a + b;
@@ -100,18 +102,19 @@ function clear() {
   displayResult();
 }
 
-function deleteDigit() {
-  if (result) initialize();
+function deleteLast() {
+  if (hasResult()) clear();
   if (!currOperator) {
     leftOperand = leftOperand.slice(0, -1);
   } else {
+    if (!rightOperand) currOperator = "";
     rightOperand = rightOperand.slice(0, -1);
   }
   displayExpression();
 }
 
 function appendDigit(digit) {
-  if (result) initialize();
+  if (hasResult()) clear();
   if (!currOperator) {
     leftOperand += digit;
   } else {
@@ -121,7 +124,7 @@ function appendDigit(digit) {
 }
 
 function appendDecimal() {
-  if (result) initialize();
+  if (hasResult()) clear();
   if (!currOperator && !leftOperand.includes(".")) {
     leftOperand += ".";
   } else if (currOperator && !rightOperand.includes(".")) {
@@ -145,7 +148,7 @@ function calculate() {
   if (!hasExpression()) return;
   const value = operate(currOperator, +leftOperand, +rightOperand);
   if (isNaN(value) || value === Infinity) {
-    resultContainer.textContent = "Error";
+    resultContainer.textContent = ERROR;
     initialize();
   } else {
     result = round(value, 5).toString();
