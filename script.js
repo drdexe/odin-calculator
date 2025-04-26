@@ -145,7 +145,7 @@ function setOperator(operator) {
 }
 
 function calculate() {
-  if (!hasExpression()) return;
+  if (!hasExpression() || hasResult()) return;
   const value = operate(currOperator, +leftOperand, +rightOperand);
   if (isNaN(value) || value === Infinity) {
     resultContainer.textContent = ERROR;
