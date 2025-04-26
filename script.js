@@ -151,7 +151,7 @@ function calculate() {
     resultContainer.textContent = ERROR;
     initialize();
   } else {
-    result = round(value, 5).toString();
+    result = round(value, 7).toString();
     displayResult();
   }
 }
